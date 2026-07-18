@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#15181D">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Leo Treino">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Leo Personal — Treino Rafael</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15181D; --card:#1E232A; --line:#2B323B;
+    --chalk:#EDEDE8; --muted:#9AA3AC;
+    --red:#E23A3A; --blue:#4A82E8; --yellow:#F2B233; --green:#3BB56C; --white:#E8E8E4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--chalk);font-family:'Archivo',sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:680px;margin:0 auto;padding:20px 16px 90px}
+
+  header{padding:8px 0 18px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+  .brand{display:flex;align-items:center;gap:14px;margin-top:8px}
+  .brand-txt{min-width:0}
+  .coach{width:76px;height:76px;flex:none;border-radius:50%;object-fit:cover;object-position:50% 30%;
+    border:2px solid var(--yellow);box-shadow:0 0 0 4px rgba(242,178,51,.14)}
+  @media (max-width:360px){ .coach{width:64px;height:64px} }
+  h1{font-family:'Anton',sans-serif;font-size:clamp(30px,8vw,46px);line-height:1.02;text-transform:uppercase}
+  .subtitle{font-family:'Anton',sans-serif;font-size:clamp(17px,4.5vw,22px);text-transform:uppercase;letter-spacing:.24em;color:var(--yellow);margin-top:4px}
+  .presc{margin-top:10px;color:var(--muted);font-size:14px}
+
+  nav{display:flex;flex-wrap:wrap;gap:8px;padding:14px 0;position:sticky;top:0;background:var(--bg);z-index:5;border-bottom:1px solid var(--line)}
+  .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    flex:1 1 calc(33.33% - 8px);min-width:108px;
+    background:var(--card);border:1px solid var(--line);color:var(--chalk);font-weight:700;font-size:13.5px;
+    padding:9px 8px;border-radius:12px;cursor:pointer;white-space:nowrap;font-family:inherit}
+  .tab-top{display:flex;align-items:center;gap:7px}
+  .tab-date{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.04em;color:var(--muted)}
+  .tab-date.none{opacity:.45}
+  .tab .plate{width:13px;height:13px;border-radius:50%;border:3px solid currentColor;flex:none}
+  .tab[aria-selected="true"]{background:var(--chalk);color:#15181D;border-color:var(--chalk)}
+  .tab[aria-selected="true"] .tab-date{color:#4A535C}
+  .tab:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+
+  .day-head{display:flex;align-items:baseline;gap:12px;margin:20px 0 4px}
+  .day-title{font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase}
+  .day-sub{color:var(--muted);font-size:13px}
+  .day-bar{height:4px;border-radius:2px;margin:10px 0 14px;background:var(--day)}
+
+  .last{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--muted);
+    background:#171C22;border:1px solid var(--line);border-radius:8px;padding:8px 11px;margin-bottom:12px}
+  .last b{color:var(--chalk);font-weight:600}
+
+  .start{display:block;width:100%;padding:14px;border:none;border-radius:12px;cursor:pointer;
+    background:var(--day);color:#15181D;font-family:'Anton',sans-serif;font-size:17px;letter-spacing:.05em;
+    text-transform:uppercase;margin-bottom:18px}
+  .finish{display:block;width:100%;padding:14px;border:1px solid var(--day);border-radius:12px;cursor:pointer;
+    background:transparent;color:var(--day);font-family:'Anton',sans-serif;font-size:16px;letter-spacing:.05em;
+    text-transform:uppercase;margin:6px 0 4px}
+
+  .ex{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
+  .ex-top{display:flex;gap:12px;align-items:flex-start}
+  .thumb{width:48px;height:48px;flex:none;border-radius:10px;border:1px solid var(--line);background:#151A20;
+    display:flex;align-items:center;justify-content:center;color:var(--day)}
+  .ic{width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .ex-info{flex:1;min-width:0}
+  .ex-name{font-weight:700;font-size:16.5px}
+  .ex-equip{color:var(--muted);font-size:13px;margin-top:2px}
+  .reps{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;white-space:nowrap;padding:4px 9px;
+    border-radius:6px;background:#141920;border:1px solid var(--line);align-self:flex-start}
+  .cue{margin-top:10px;font-size:14px;color:#C9CFD5}
+  .cue b{color:var(--chalk)}
+
+  .sets{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+  .set{display:flex;align-items:center;gap:10px;background:#171C22;border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+  .set-n{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);width:44px;flex:none}
+  .set-r{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;width:52px;flex:none}
+  .set input[type=text]{flex:1;min-width:0;background:#0F1318;border:1px solid var(--line);border-radius:6px;
+    color:var(--chalk);padding:6px 8px;font-family:'IBM Plex Mono',monospace;font-size:13px}
+  .set input[type=text]::placeholder{color:#5C666F}
+  .chk{width:30px;height:30px;flex:none;border-radius:8px;border:1px solid var(--line);background:#0F1318;
+    color:var(--muted);cursor:pointer;font-size:15px;line-height:1;font-family:inherit}
+  .chk[aria-pressed="true"]{background:var(--day);border-color:var(--day);color:#15181D;font-weight:700}
+  .set[data-done="1"]{opacity:.62}
+
+  .row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:700;text-decoration:none;
+    padding:9px 13px;border-radius:8px;cursor:pointer;border:1px solid var(--line);background:#171C22;color:var(--chalk);font-family:inherit}
+  .btn.solid{background:var(--chalk);color:#15181D;border-color:var(--chalk)}
+
+  .stretch{border:1px dashed var(--line);border-radius:12px;padding:14px 16px;color:var(--muted);font-size:14px;margin-top:16px}
+  .stretch b{color:var(--chalk)}
+  footer{margin-top:30px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px}
+  .backup{margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:10px;background:#171C22}
+  .backup-t{margin-bottom:10px;line-height:1.45}
+  footer .row{margin-top:0}
+
+  /* Barra de descanso fixa */
+  #rest{position:fixed;left:0;right:0;bottom:0;background:#11151A;border-top:1px solid var(--line);
+    padding:12px 16px;display:none;z-index:60;box-shadow:0 -8px 24px rgba(0,0,0,.45)}
+  #rest.on{display:block}
+  /* no modo guiado a barra sobe para ficar acima dos botões de navegação */
+  body.playing #rest{bottom:66px}
+  .rest-in{max-width:680px;margin:0 auto;display:flex;align-items:center;gap:10px}
+  #rest-time{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:600;width:74px;flex:none}
+  #rest-lbl{flex:1;min-width:0;font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rest-track{position:absolute;left:0;top:0;height:3px;background:var(--yellow);width:0%}
+  @media (max-width:400px){
+    #rest-lbl{display:none}
+    #rest-time{font-size:24px}
+    #rest .btn{padding:9px 11px}
+  }
+
+  /* Modo treino guiado */
+  #play{position:fixed;inset:0;background:var(--bg);z-index:40;display:none;overflow-y:auto}
+  #play.on{display:block}
+  .play-in{max-width:680px;margin:0 auto;padding:18px 16px 190px;min-height:100%}
+  .play-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+  .play-step{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+  .progress{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:22px}
+  .progress i{display:block;height:100%;background:var(--day);width:0;transition:width .25s}
+  .play-thumb{width:88px;height:88px;border-radius:16px;border:1px solid var(--line);background:#171C22;
+    display:flex;align-items:center;justify-content:center;color:var(--day);margin-bottom:16px}
+  .play-thumb .ic{width:56px;height:56px}
+  .play-name{font-family:'Anton',sans-serif;font-size:clamp(26px,7vw,36px);text-transform:uppercase;line-height:1.08}
+  .play-equip{color:var(--muted);font-size:14px;margin-top:4px}
+  .play-cue{margin-top:14px;font-size:15px;color:#C9CFD5;border-left:2px solid var(--day);padding-left:12px}
+  .play-nav{position:fixed;left:0;right:0;bottom:0;background:#11151A;border-top:1px solid var(--line);padding:12px 16px;z-index:50}
+  .play-nav-in{max-width:680px;margin:0 auto;display:flex;gap:8px}
+  .play-nav .btn{justify-content:center;padding:13px 10px;white-space:nowrap}
+  #p-prev{flex:0 0 54px;padding:13px 0}
+  #p-rest2{flex:1.2}
+  #p-next{flex:1.6}
+  @media (prefers-reduced-motion:no-preference){ .ex{animation:up .25s ease both} @keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}} }
+
+  /* ===== Compatibilidade Safari/iOS (gap em flexbox só a partir do iOS 14.5) ===== */
+  .brand{margin-left:0}
+  .brand>*{margin-right:14px}
+  .brand>*:last-child{margin-right:0}
+  nav{margin-left:-4px;margin-right:-4px}
+  .tab{margin:4px}
+  .tab>*{margin-bottom:3px}
+  .tab-top>*{margin:0 3px}
+  .day-head>*{margin-right:12px}
+  .day-head>*:last-child{margin-right:0}
+  .ex-top>*{margin-right:12px}
+  .ex-top>*:last-child{margin-right:0}
+  .reps{margin-left:auto}
+  .sets>*+*{margin-top:6px}
+  .set>*{margin-right:10px}
+  .set>*:last-child{margin-right:0}
+  .row{margin-left:-4px;margin-right:-4px}
+  .row>*{margin:0 4px 4px}
+  .btn>*{margin-right:7px}
+  .btn>*:last-child{margin-right:0}
+  .rest-in>*{margin-right:10px}
+  .rest-in>*:last-child{margin-right:0}
+  .play-top>*{margin-right:12px}
+  .play-top>*:last-child{margin-right:0}
+  .play-nav-in>*{margin-right:8px}
+  .play-nav-in>*:last-child{margin-right:0}
+  @supports (gap: 1px) and (-webkit-hyphens: none){
+    .brand,nav,.day-head,.ex-top,.row,.rest-in,.play-top,.play-nav-in{margin-left:0;margin-right:0}
+    .brand>*,.tab,.tab-top>*,.day-head>*,.ex-top>*,.sets>*+*,.set>*,.row>*,.btn>*,.rest-in>*,.play-top>*,.play-nav-in>*{margin:0}
+    .reps{margin-left:auto}
+  }
+</style>
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-puxada" viewBox="0 0 24 24"><line x1="5" y1="4" x2="19" y2="4"/><circle cx="12" cy="9" r="2"/><path d="M6.5 4.5 L10.4 7.6 M17.5 4.5 L13.6 7.6"/><path d="M12 11 v5 M12 16 l-3 4 M12 16 l3 4"/></symbol>
+  <symbol id="i-remada" viewBox="0 0 24 24"><circle cx="8" cy="6.5" r="2"/><path d="M8 8.5 v6.5"/><path d="M8 11 h8 M16 9 v4"/><path d="M8 15 l5.5 3 M8 15 l-2.5 4.5"/></symbol>
+  <symbol id="i-voador" viewBox="0 0 24 24"><circle cx="12" cy="6" r="2"/><path d="M12 8.5 v6.5 M12 15 l-2.5 4.5 M12 15 l2.5 4.5"/><path d="M12 10.5 C8.5 10.5 6 8 5.2 5.8 M12 10.5 C15.5 10.5 18 8 18.8 5.8"/></symbol>
+  <symbol id="i-voadorinv" viewBox="0 0 24 24"><circle cx="12" cy="6" r="2"/><path d="M12 8.5 v6.5 M12 15 l-2.5 4.5 M12 15 l2.5 4.5"/><path d="M12 10.5 L5.5 8 M12 10.5 L18.5 8"/><path d="M6.8 6.2 L5.5 8 L7.2 9.4 M17.2 6.2 L18.5 8 L16.8 9.4"/></symbol>
+  <symbol id="i-pressfrontal" viewBox="0 0 24 24"><circle cx="8.5" cy="6" r="2"/><path d="M8.5 8.5 v6.5 M8.5 15 l-2.5 4.5 M8.5 15 l3 4.5"/><path d="M8.5 10.5 h9 M17.5 8.2 v4.6"/></symbol>
+  <symbol id="i-supino" viewBox="0 0 24 24"><line x1="4" y1="19" x2="20" y2="19"/><circle cx="17.6" cy="14.6" r="1.9"/><path d="M5 15.5 h10.5"/><path d="M10 15.5 V9"/><line x1="7" y1="9" x2="13" y2="9"/></symbol>
+  <symbol id="i-pullover" viewBox="0 0 24 24"><line x1="4" y1="19" x2="20" y2="19"/><circle cx="17.6" cy="14.6" r="1.9"/><path d="M6 15.5 h9.5"/><path d="M14 15.5 C14 10.5 9.5 8.5 6.5 9.8"/><circle cx="6" cy="10.2" r="1.1"/></symbol>
+  <symbol id="i-triceps" viewBox="0 0 24 24"><circle cx="10.5" cy="5.5" r="2"/><path d="M10.5 7.5 v7 M10.5 14.5 l-2.5 4.5 M10.5 14.5 l2.5 4.5"/><path d="M10.5 9.5 L14.5 11 M14.5 11 v5"/><line x1="12.5" y1="16" x2="16.5" y2="16"/></symbol>
+  <symbol id="i-dip" viewBox="0 0 24 24"><path d="M3.5 12.5 h4.5 M5.5 12.5 v6.5"/><circle cx="11" cy="6" r="1.9"/><path d="M11 8 L10 13 M11 9 L8 12.5"/><path d="M10 13 L16 15.5 L19.5 15.5"/></symbol>
+  <symbol id="i-biceps" viewBox="0 0 24 24"><circle cx="10.5" cy="5.5" r="2"/><path d="M10.5 7.5 v7 M10.5 14.5 l-2.5 4.5 M10.5 14.5 l2.5 4.5"/><path d="M10.5 9.5 L15 12 L15.5 7.2"/><line x1="13.8" y1="6.8" x2="17.2" y2="7.4"/></symbol>
+  <symbol id="i-agacho" viewBox="0 0 24 24"><line x1="5.5" y1="7" x2="18.5" y2="7"/><circle cx="12" cy="4.2" r="1.7"/><path d="M12 7 v4"/><path d="M12 11 L8.8 13.5 L9.8 19 M12 11 L15.2 13.5 L14.2 19"/></symbol>
+  <symbol id="i-legpress" viewBox="0 0 24 24"><circle cx="6.5" cy="8.5" r="1.9"/><path d="M6.5 10.5 L8 16"/><path d="M8 15.5 L12 11.5 L16.2 13.6"/><line x1="18.8" y1="7" x2="15.2" y2="18"/></symbol>
+  <symbol id="i-extensora" viewBox="0 0 24 24"><line x1="4.5" y1="19" x2="12.5" y2="19"/><circle cx="8" cy="5.5" r="1.9"/><path d="M8 7.5 v6.5"/><path d="M8 14 h5.5 M13.5 14 L18 10.5"/></symbol>
+  <symbol id="i-flexora" viewBox="0 0 24 24"><line x1="4" y1="16.5" x2="20" y2="16.5"/><circle cx="5.8" cy="12.6" r="1.8"/><path d="M8 14 h8"/><path d="M16 14 L18.2 8.8"/><circle cx="18.6" cy="7.8" r="1"/></symbol>
+  <symbol id="i-gluteo" viewBox="0 0 24 24"><line x1="3.5" y1="18" x2="20.5" y2="18"/><path d="M4 18 v-5.5 h3"/><circle cx="5.8" cy="9.8" r="1.7"/><path d="M7.5 10.8 L12.5 9.5 M12.5 9.5 L15.5 13.5 L15.5 18"/><circle cx="12.5" cy="6.8" r="1.4"/></symbol>
+  <symbol id="i-pant" viewBox="0 0 24 24"><path d="M3.5 19.5 h8.5 M12 19.5 v-3.5 h8.5"/><circle cx="15.5" cy="4.8" r="1.8"/><path d="M15.5 6.8 v6 M15.5 12.8 L14.8 15.3 M15.5 12.8 L16.4 15.3"/></symbol>
+  <symbol id="i-adutora" viewBox="0 0 24 24"><circle cx="12" cy="5.2" r="1.9"/><path d="M12 7.2 v5"/><path d="M12 12.2 L7.5 18.5 M12 12.2 L16.5 18.5"/><path d="M6 14.6 l2.6 1.4 M18 14.6 l-2.6 1.4"/></symbol>
+  <symbol id="i-abdutora" viewBox="0 0 24 24"><circle cx="12" cy="5.2" r="1.9"/><path d="M12 7.2 v5"/><path d="M12 12.2 L7.5 18.5 M12 12.2 L16.5 18.5"/><path d="M10.2 15.2 l-2.8 1.2 M13.8 15.2 l2.8 1.2"/></symbol>
+  <symbol id="i-ombropress" viewBox="0 0 24 24"><line x1="6" y1="4" x2="18" y2="4"/><circle cx="12" cy="8.2" r="1.9"/><path d="M12 10.5 L7.5 4.6 M12 10.5 L16.5 4.6"/><path d="M12 10.5 v5 M12 15.5 l-2.5 4 M12 15.5 l2.5 4"/></symbol>
+  <symbol id="i-lateral" viewBox="0 0 24 24"><circle cx="12" cy="6" r="2"/><path d="M12 8.5 v6.5 M12 15 l-2.5 4.5 M12 15 l2.5 4.5"/><path d="M12 10.5 h-7 M12 10.5 h7"/><path d="M4.6 9.2 v2.6 M19.4 9.2 v2.6"/></symbol>
+  <symbol id="i-encolhe" viewBox="0 0 24 24"><circle cx="12" cy="6.2" r="1.9"/><path d="M12 8.5 v7 M12 15.5 l-2.5 4 M12 15.5 l2.5 4"/><path d="M12 9.5 L8.5 10.6 V16 M12 9.5 L15.5 10.6 V16"/><path d="M4.6 6.8 l1.6 -1.7 l1.6 1.7 M16.2 6.8 l1.6 -1.7 l1.6 1.7"/></symbol>
+  <symbol id="i-along" viewBox="0 0 24 24"><circle cx="9" cy="5" r="1.8"/><path d="M9 7 v5 M9 12 L5.5 18 M9 12 L14 15 L19 15"/><path d="M9 9 L14 6.5"/></symbol>
+</svg>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Ficha de treino · Rafael · Julho 2026</div>
+  <div class="brand">
+    <img class="coach" src="data:image/jpeg;base64,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" alt="Leo, personal trainer">
+    <div class="brand-txt">
+      <h1>Leo Personal</h1>
+      <div class="subtitle">Treino Rafael</div>
+    </div>
+  </div>
+  <div class="presc">Anote a carga, marque cada série e use o cronômetro de descanso. Ou toque em <b>Iniciar treino</b> para o modo guiado.</div>
+</header>
+
+<nav role="tablist" aria-label="Dias de treino">
+  <button class="tab" role="tab" aria-selected="true" data-day="a"><span class="tab-top"><span class="plate" style="color:var(--red)"></span>A · Peito</span><span class="tab-date" data-date="a"></span></button>
+  <button class="tab" role="tab" aria-selected="false" data-day="b"><span class="tab-top"><span class="plate" style="color:var(--blue)"></span>B · Costas</span><span class="tab-date" data-date="b"></span></button>
+  <button class="tab" role="tab" aria-selected="false" data-day="c"><span class="tab-top"><span class="plate" style="color:var(--yellow)"></span>C · Pernas</span><span class="tab-date" data-date="c"></span></button>
+</nav>
+
+<main id="main"></main>
+
+<footer>
+  Bi-sets (ex.: 10+10): execute os dois movimentos em sequência, sem descanso entre eles — só depois de completar o par é que entra o intervalo. Ajustes de carga: valide sempre com o Leo.
+  <div class="backup">
+    <div class="backup-t">Cargas e datas ficam salvas neste navegador. Limpar os dados do navegador apaga o histórico — exporte um backup de vez em quando.</div>
+    <div class="row">
+      <button class="btn" id="expBtn">⬇ Exportar backup</button>
+      <button class="btn" id="impBtn">⬆ Importar backup</button>
+      <input type="file" id="impFile" accept="application/json" hidden>
+    </div>
+  </div>
+</footer>
+</div>
+
+<!-- Barra de descanso -->
+<div id="rest" role="status" aria-live="polite">
+  <i class="rest-track" id="rest-track"></i>
+  <div class="rest-in">
+    <div id="rest-time">01:00</div>
+    <div id="rest-lbl">Descanso</div>
+    <button class="btn" id="rest-add">+30s</button>
+    <button class="btn solid" id="rest-skip">Pular</button>
+  </div>
+</div>
+
+<!-- Modo treino guiado -->
+<div id="play" role="dialog" aria-label="Modo treino">
+  <div class="play-in">
+    <div class="play-top">
+      <div class="play-step" id="p-step"></div>
+      <button class="btn" id="p-close">Sair</button>
+    </div>
+    <div class="progress"><i id="p-bar"></i></div>
+    <div class="play-thumb"><svg class="ic"><use id="p-icon" href="#i-puxada"/></svg></div>
+    <div class="play-name" id="p-name"></div>
+    <div class="play-equip" id="p-equip"></div>
+    <div class="play-cue" id="p-cue"></div>
+    <div class="sets" id="p-sets"></div>
+    <div class="row">
+      <a class="btn solid" id="p-video" target="_blank" rel="noopener">▶ Ver vídeo de execução</a>
+      <button class="btn" id="p-rest">⏱ Iniciar descanso</button>
+    </div>
+  </div>
+  <div class="play-nav"><div class="play-nav-in">
+    <button class="btn" id="p-prev">←</button>
+    <button class="btn" id="p-rest2">⏱ Descanso</button>
+    <button class="btn solid" id="p-next">Próximo →</button>
+  </div></div>
+</div>
+
+<script>
+const YT = q => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
+const P = [15,12,10,8];
+
+const DAYS = {
+ a:{title:"Treino A",sub:"Peito · Ombro · Tríceps",color:"var(--red)",rest:90,
+  ex:[
+   {n:"Supino reto + Crucifixo aberto",e:"Halteres (HBC)",r:["10+10","10+10","10+10"],i:"i-supino",c:"Bi-set sem descanso: 10 reps de supino reto e, na sequência, 10 reps de crucifixo aberto com os mesmos halteres.",v:"supino reto halteres e crucifixo aberto biset execucao"},
+   {n:"Crucifixo quebrado 45° + Supino 45°",e:"Halteres (HBC/HBL)",r:["10+10","10+10","10+10"],i:"i-voador",c:"No banco a 45°: 10 reps de crucifixo quebrado e, sem soltar os halteres, 10 reps de supino inclinado.",v:"crucifixo quebrado 45 graus e supino inclinado halteres biset"},
+   {n:"Crucifixo (P.A.) + Pullover",e:"Polia alta (P.A.) + Halteres (HBC)",r:["10+10","10+10","10+10"],i:"i-voador",c:"10 reps de crucifixo na polia alta seguidas, sem descanso, de 10 reps de pullover com halteres.",v:"crucifixo polia alta e pullover halteres biset execucao"},
+   {n:"Abdução de ombros + Tríceps testa bilateral",e:"Halteres (HBC)",r:["10+10","10+10","10+10"],i:"i-lateral",c:"10 reps de elevação lateral e, na sequência, 10 reps de tríceps testa bilateral com o mesmo par de halteres.",v:"elevacao lateral e triceps testa halteres biset execucao"},
+   {n:"Desenvolvimento arnold + Tríceps francês unilateral",e:"Halteres (HBC)",r:["10+10","10+10","10+10"],i:"i-ombropress",c:"10 reps de desenvolvimento arnold seguidas, sem descanso, de 10 reps de tríceps francês unilateral de cada lado.",v:"desenvolvimento arnold e triceps frances unilateral biset execucao"},
+   {n:"Flexão alternada de ombros + Tríceps direto",e:"Halteres (HBC) + Cross",r:["10+10","10+10","10+10"],i:"i-lateral",c:"10 reps de elevação frontal alternada e, na sequência, 10 reps de tríceps direto no cross.",v:"elevacao frontal alternada e triceps corda cross biset execucao"},
+   {n:"Alongamento",e:"Peito, ombro e tríceps",r:[],i:"i-along",c:"20 a 30s por posição, sem dor. Respire fundo e relaxe no alongamento.",v:"alongamento peito ombro e triceps"}
+ ]},
+ b:{title:"Treino B",sub:"Costas · Bíceps",color:"var(--blue)",rest:90,
+  ex:[
+   {n:"Puxada aberta + Supinada",e:"Polia alta",r:["10+10","10+10","10+10"],i:"i-puxada",c:"10 reps de puxada aberta (pegada pronada) e, sem soltar a barra, 10 reps de puxada supinada.",v:"puxada aberta e supinada biset execucao"},
+   {n:"Puxada alta (corda) + Extensão de ombros",e:"Corda (polia alta)",r:["10+10","10+10","10+10"],i:"i-puxada",c:"10 reps de puxada alta com a corda e, na sequência, 10 reps de extensão de ombros também com a corda.",v:"puxada alta corda e extensao de ombros corda biset execucao"},
+   {n:"Remada neutra (máquina) + Serrote",e:"Máquina + Halteres (HBC)",r:["10+10","10+10","10+10"],i:"i-remada",c:"10 reps de remada neutra na máquina seguidas, sem descanso, de 10 reps de serrote unilateral com halteres.",v:"remada neutra maquina e serrote halteres biset execucao"},
+   {n:"Bíceps Scott",e:"Máquina/Barra Scott",r:[10,10,10],i:"i-biceps",c:"Axilas apoiadas; desça quase até a extensão total e suba sem tirar o cotovelo do apoio.",v:"rosca scott execucao"},
+   {n:"Bíceps alternado",e:"Halteres (HBC)",r:[8,8,8],i:"i-biceps",c:"Alterne os braços, cotovelo fixo ao lado do corpo, sem balançar o tronco.",v:"rosca biceps alternado halteres execucao"},
+   {n:"Bíceps neutro com corda",e:"Corda (pulley)",r:[10,10,10],i:"i-biceps",c:"Pegada neutra na corda, cotovelos fixos; suba até a contração máxima sem projetar os ombros à frente.",v:"rosca martelo corda polia execucao"},
+   {n:"Alongamento",e:"Costas e bíceps",r:[],i:"i-along",c:"20 a 30s por posição, sem dor. Respire fundo e relaxe no alongamento.",v:"alongamento costas e biceps"}
+ ]},
+ c:{title:"Treino C",sub:"Pernas",color:"var(--yellow)",rest:100,
+  ex:[
+   {n:"Cadeira flexora bilateral",e:"Máquina (sentado)",r:[15,15,15],i:"i-flexora",c:"Flexione puxando o rolo para baixo/trás com controle e retorne devagar.",v:"cadeira flexora bilateral execucao"},
+   {n:"Leg horizontal bilateral",e:"Máquina (leg press horizontal)",r:[8,10,12],i:"i-legpress",c:"3 séries com reps crescentes (8, 10 e 12), ajustando a carga a cada série.",v:"leg press horizontal bilateral execucao"},
+   {n:"Agachamento sumo",e:"Halteres (HBC)",r:["12 c/peso+12 s/peso","12 c/peso+12 s/peso","12 c/peso+12 s/peso"],i:"i-agacho",c:"12 reps com halter entre as pernas e, sem descanso, mais 12 reps sem peso na mesma série.",v:"agachamento sumo halter execucao"},
+   {n:"Leg 45° 2 tempos",e:"Leg press 45°",r:["8+8 direto","8+8 direto","8+8 direto"],i:"i-legpress",c:"8 reps em 2 tempos e, sem soltar a carga, mais 8 reps diretas na sequência.",v:"leg press 45 graus 2 tempos execucao"},
+   {n:"Cadeira extensora unilateral",e:"Máquina",r:[12,12,12],i:"i-extensora",c:"Uma perna por vez; estenda até o final e desça controlado.",v:"cadeira extensora unilateral execucao"},
+   {n:"Alongamento",e:"Quadríceps, posteriores e panturrilha",r:[],i:"i-along",c:"20 a 30s por perna em cada posição.",v:"alongamento pernas pos treino"}
+ ]}
+};
+
+/* ---------- estado + persistência ----------
+   Dentro do Claude usa window.storage; ao abrir o arquivo salvo no
+   navegador (celular/PC) cai para o localStorage do próprio navegador. */
+var state = {};
+var key = "leo-treino-rafael-v1";
+var memStore = {};
+var LS = (function(){
+  try{ var t="__t"; window.localStorage.setItem(t,"1"); window.localStorage.removeItem(t); return window.localStorage; }
+  catch(e){ return null; }
+})();
+function readRaw(){
+  try{ if(LS){ return LS.getItem(key); } }catch(e){}
+  return (key in memStore) ? memStore[key] : null;
+}
+function writeRaw(v){
+  memStore[key]=v;
+  try{ if(LS){ LS.setItem(key, v); } }catch(e){}
+}
+function load(){
+  var raw = null;
+  try{ raw = readRaw(); }catch(e){ raw = null; }
+  try{ state = raw ? JSON.parse(raw) : {}; }catch(e){ state = {}; }
+}
+var saveT;
+function save(){
+  clearTimeout(saveT);
+  saveT = setTimeout(function(){ writeRaw(JSON.stringify(state)); }, 400);
+}
+try{ window.addEventListener('pagehide', function(){ try{ writeRaw(JSON.stringify(state)); }catch(e){} }); }catch(e){}
+const sid = (d,ei,si) => d+"-"+ei+"-"+si;
+
+/* ---------- conclusão de treino ---------- */
+const dkey = d => "done-" + d;
+const fmtDate = iso => { const dt=new Date(iso); return String(dt.getDate()).padStart(2,'0')+"/"+String(dt.getMonth()+1).padStart(2,'0')+"/"+dt.getFullYear(); };
+function daysAgo(iso){
+  const a=new Date(iso); a.setHours(0,0,0,0);
+  const b=new Date(); b.setHours(0,0,0,0);
+  return Math.round((b-a)/86400000);
+}
+function agoLabel(iso){
+  const n=daysAgo(iso);
+  if(n===0) return "hoje";
+  if(n===1) return "ontem";
+  return "há " + n + " dias";
+}
+function paintTabDates(){
+  document.querySelectorAll('.tab-date').forEach(el=>{
+    const rec = state[dkey(el.dataset.date)];
+    if(rec && rec.at){ el.textContent = fmtDate(rec.at); el.classList.remove('none'); }
+    else { el.textContent = "nunca feito"; el.classList.add('none'); }
+  });
+}
+function finishDay(d){
+  state[dkey(d)] = { at: new Date().toISOString() };
+  // limpa as marcações de série do dia, preservando as cargas anotadas
+  DAYS[d].ex.forEach((ex,ei)=> ex.r.forEach((_,si)=>{ const id=sid(d,ei,si); if(state[id]) state[id].done=false; }));
+  save(); paintTabDates();
+}
+
+/* ---------- cronômetro de descanso ---------- */
+const restEl=document.getElementById('rest'), restTime=document.getElementById('rest-time'),
+      restLbl=document.getElementById('rest-lbl'), restTrack=document.getElementById('rest-track');
+let restInt=null, restLeft=0, restTotal=0;
+const fmt = s => String(Math.floor(s/60)).padStart(2,'0')+":"+String(s%60).padStart(2,'0');
+function startRest(sec, label){
+  clearInterval(restInt); restLeft=sec; restTotal=sec;
+  restLbl.textContent = label || "Descanso";
+  restEl.classList.add('on'); paint();
+  restInt=setInterval(()=>{ restLeft--; paint(); if(restLeft<=0) endRest(true); },1000);
+}
+function paint(){ restTime.textContent=fmt(Math.max(restLeft,0)); restTrack.style.width=(100-(restLeft/restTotal*100))+"%"; }
+function endRest(beep){
+  clearInterval(restInt); restEl.classList.remove('on');
+  if(beep){ try{ const a=new (window.AudioContext||window.webkitAudioContext)(); const o=a.createOscillator(), g=a.createGain();
+    o.connect(g); g.connect(a.destination); o.frequency.value=880; g.gain.setValueAtTime(.15,a.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.5); o.start(); o.stop(a.currentTime+.5);
+    if(navigator.vibrate) navigator.vibrate(200); }catch(e){} }
+}
+document.getElementById('rest-skip').onclick=()=>endRest(false);
+document.getElementById('rest-add').onclick=()=>{ restLeft+=30; restTotal+=30; paint(); };
+
+/* ---------- linhas de série ---------- */
+function setsHTML(d, ei, ex){
+  if(!ex.r.length) return "";
+  return '<div class="sets">' + ex.r.map((rep,si)=>{
+    const id=sid(d,ei,si), st=state[id]||{};
+    return `<div class="set" data-done="${st.done?1:0}">
+      <span class="set-n">Série ${si+1}</span>
+      <span class="set-r">${rep}${typeof rep==='number'?' rep':''}</span>
+      <input type="text" inputmode="decimal" placeholder="carga (kg)" value="${st.load?String(st.load).replace(/"/g,''):''}" data-id="${id}" class="load">
+      <button class="chk" aria-pressed="${st.done?'true':'false'}" data-id="${id}" data-rest="${DAYS[d].rest}" aria-label="Marcar série ${si+1}">✓</button>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+function bindSets(root, onCheck){
+  root.querySelectorAll('.load').forEach(inp=>{
+    inp.addEventListener('input',()=>{ const id=inp.dataset.id; state[id]=state[id]||{}; state[id].load=inp.value; save(); });
+  });
+  root.querySelectorAll('.chk').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.id, on=btn.getAttribute('aria-pressed')==='true';
+      state[id]=state[id]||{}; state[id].done=!on; save();
+      btn.setAttribute('aria-pressed', String(!on));
+      btn.closest('.set').dataset.done = !on ? 1 : 0;
+      if(!on){ startRest(Number(btn.dataset.rest)); if(onCheck) onCheck(); }
+    });
+  });
+}
+
+/* ---------- lista do dia ---------- */
+const main=document.getElementById('main');
+let current='a';
+function renderDay(d){
+  current=d; const day=DAYS[d];
+  const rec = state[dkey(d)];
+  main.style.setProperty('--day', day.color);
+  main.innerHTML = `
+    <div class="day-head"><div class="day-title">${day.title}</div><div class="day-sub">${day.sub}</div></div>
+    <div class="day-bar"></div>
+    <div class="last">${rec&&rec.at ? `Último treino: <b>${fmtDate(rec.at)}</b> · ${agoLabel(rec.at)}` : `Você ainda não finalizou este treino.`}</div>
+    <button class="start" id="startBtn">▶ Iniciar treino</button>
+    ${day.ex.map((ex,ei)=>`
+      <div class="ex">
+        <div class="ex-top">
+          <div class="thumb"><svg class="ic"><use href="#${ex.i}"/></svg></div>
+          <div class="ex-info"><div class="ex-name">${ex.n}</div><div class="ex-equip">${ex.e}</div></div>
+          ${ex.r.length?`<div class="reps">${ex.r.length} × ${ex.r.join('·')}</div>`:''}
+        </div>
+        <div class="cue"><b>Execução:</b> ${ex.c}</div>
+        ${setsHTML(d,ei,ex)}
+        <div class="row">
+          <a class="btn solid" target="_blank" rel="noopener" href="${YT(ex.v)}">▶ Ver vídeo</a>
+          ${ex.r.length?`<button class="btn timer" data-rest="${day.rest}">⏱ Descanso ${day.rest}s</button>`:''}
+        </div>
+      </div>`).join('')}
+    <button class="finish" id="finishBtn">✓ Finalizar treino de hoje</button>
+    <div class="stretch"><b>Dica:</b> ao finalizar, a data fica registrada no botão do dia e as marcações de série são zeradas. As cargas anotadas continuam salvas para você comparar na próxima semana.</div>`;
+  bindSets(main);
+  main.querySelectorAll('.timer').forEach(b=>b.onclick=()=>startRest(Number(b.dataset.rest)));
+  document.getElementById('startBtn').onclick=()=>openPlay(d);
+  document.getElementById('finishBtn').onclick=()=>{ finishDay(d); renderDay(d); window.scrollTo({top:0}); };
+}
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected','false'));
+    tab.setAttribute('aria-selected','true');
+    renderDay(tab.dataset.day); window.scrollTo({top:0});
+  };
+});
+
+/* ---------- modo guiado ---------- */
+const play=document.getElementById('play');
+let pDay='a', pIdx=0;
+function openPlay(d){ pDay=d; pIdx=0; play.style.setProperty('--day',DAYS[d].color); play.classList.add('on'); document.body.classList.add('playing'); document.body.style.overflow='hidden'; renderPlay(); }
+function closePlay(){ play.classList.remove('on'); document.body.classList.remove('playing'); document.body.style.overflow=''; endRest(false); renderDay(current); }
+function renderPlay(){
+  const day=DAYS[pDay], ex=day.ex[pIdx], last=pIdx===day.ex.length-1;
+  document.getElementById('p-step').textContent=`${day.title} · Exercício ${pIdx+1} de ${day.ex.length}`;
+  document.getElementById('p-bar').style.width=((pIdx+1)/day.ex.length*100)+"%";
+  document.getElementById('p-icon').setAttribute('href','#'+ex.i);
+  document.getElementById('p-name').textContent=ex.n;
+  document.getElementById('p-equip').textContent=ex.e;
+  document.getElementById('p-cue').textContent=ex.c;
+  document.getElementById('p-video').href=YT(ex.v);
+  const box=document.getElementById('p-sets'); box.innerHTML=setsHTML(pDay,pIdx,ex).replace(/^<div class="sets">|<\/div>$/g,'');
+  bindSets(box);
+  document.getElementById('p-prev').disabled = pIdx===0;
+  const hasSets = ex.r.length>0;
+  const secs = day.rest;
+  document.getElementById('p-rest').textContent = "⏱ Descansar " + secs + "s";
+  document.getElementById('p-rest2').textContent = "⏱ " + secs + "s";
+  document.getElementById('p-rest').style.display = hasSets ? "" : "none";
+  document.getElementById('p-rest2').style.display = hasSets ? "" : "none";
+  document.getElementById('p-next').textContent = last ? "Concluir treino ✓" : "Próximo →";
+  play.scrollTo({top:0});
+}
+document.getElementById('p-close').onclick=closePlay;
+const pRest=()=>startRest(DAYS[pDay].rest, "Descanso · " + DAYS[pDay].ex[pIdx].n);
+document.getElementById('p-rest').onclick=pRest;
+document.getElementById('p-rest2').onclick=pRest;
+document.getElementById('p-prev').onclick=()=>{ if(pIdx>0){pIdx--;renderPlay();} };
+document.getElementById('p-next').onclick=()=>{
+  if(pIdx < DAYS[pDay].ex.length-1){ pIdx++; endRest(false); renderPlay(); }
+  else { const d=pDay; finishDay(d); closePlay(); alert("Treino concluído em " + fmtDate(state[dkey(d)].at) + ". Bom trabalho!"); }
+};
+
+/* ---------- backup ---------- */
+document.getElementById('expBtn').onclick=()=>{
+  const blob = new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a = document.createElement('a');
+  const hoje = new Date().toISOString().slice(0,10);
+  a.href = URL.createObjectURL(blob);
+  a.download = "leo-treino-backup-" + hoje + ".json";
+  a.click(); URL.revokeObjectURL(a.href);
+};
+const impFile = document.getElementById('impFile');
+document.getElementById('impBtn').onclick=()=>impFile.click();
+impFile.onchange=()=>{
+  const f = impFile.files[0]; if(!f) return;
+  const rd = new FileReader();
+  rd.onload=()=>{
+    try{
+      const data = JSON.parse(rd.result);
+      if(typeof data !== 'object' || Array.isArray(data)) throw 0;
+      state = data; save(); paintTabDates(); renderDay(current);
+      alert("Backup importado. Cargas e datas restauradas.");
+    }catch(e){ alert("Não foi possível ler esse arquivo. Selecione um backup exportado por esta ficha."); }
+    impFile.value = "";
+  };
+  rd.readAsText(f);
+};
+
+function showFatal(msg){
+  try{
+    var m=document.getElementById('main');
+    if(m){ m.innerHTML='<div style="background:#2A1416;border:1px solid #E23A3A;border-radius:12px;padding:16px;margin-top:16px;font-size:13px;line-height:1.5;color:#F0C7C7">'
+      +'<b style="color:#fff">Ocorreu um erro ao carregar os treinos.</b><br>'
+      +'Tire um print desta mensagem e envie:<br><br><span style="font-family:monospace;font-size:12px;color:#fff">'
+      +String(msg).replace(/</g,'&lt;')+'</span></div>'; }
+  }catch(_){}
+}
+function boot(){
+  try{ load(); }catch(e){}
+  try{ paintTabDates(); }catch(e){}
+  try{ renderDay('a'); }
+  catch(e){ if(window.console&&console.error) console.error(e); showFatal((e&&e.message)?e.message:e); }
+}
+try{ window.addEventListener('error', function(ev){ showFatal((ev&&ev.message)?ev.message:'erro'); }); }catch(e){}
+if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot); }
+else { boot(); }
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
